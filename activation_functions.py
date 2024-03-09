@@ -10,4 +10,4 @@ sigmoid = lambda y : 1 / (1 + EULER_CONSTANT ** -y)
 
 signum = lambda y : 1 if y >= 0 else 0
 
-tanh = lambda y, a : 1 - EULER_CONSTANT**(-y*a) / 1 + EULER_CONSTANT**(-y*a)   
+tanh = lambda y, a : (1 - EULER_CONSTANT**(-y*a)) / (1 + EULER_CONSTANT**(-y*a))   
