@@ -1,6 +1,6 @@
 EULER_CONSTANT = 2.7182818
 
-Identity = lambda y : y
+identity = lambda y : y
 
 ReLU = lambda y : y if y >= 0 else 0
 
