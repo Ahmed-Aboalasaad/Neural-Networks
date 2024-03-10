@@ -1,25 +1,26 @@
 import numpy as np
 import pandas as pd 
 
+
 def split_dataset(dataset, c1 : np.ndarray, c2 : np.ndarray, feature1, feature2, class_train_size):
     data = dataset[[feature1, feature2, 'Class']]
     data = data[(dataset['Class'] == c1) | (dataset['Class'] == c2)]
+    
     train_set = pd.DataFrame()
     test_set = pd.DataFrame()
-    shuffled_class_data = data.sample(frac=1, random_state=42)
+
+    # adding an amount of [class_train_size] from each class to the train set, and an amount of [50 - class_train_size] to the test set
     for c in [c1 , c2]:
         class_data = data[data['Class'] == c] 
-        train_set = pd.concat([train_set, shuffled_class_data.iloc[:class_train_size]])
-        test_set = pd.concat([test_set, shuffled_class_data.iloc[class_train_size:]])
-    train_set.replace({
-        c1 : -1,
-        c2 : 1
-    },
-    inplace=True)
-    test_set.replace({
-        c1 : -1,
-        c2 : 1
-    },
-    inplace= True)
+        train_set = pd.concat([train_set, class_data.iloc[:class_train_size]])
+        test_set = pd.concat([test_set, class_data.iloc[class_train_size:]])
 
+    # encoding
+    train_set.replace({c1 : -1,c2 : 1},inplace=True)
+    test_set.replace({c1 : -1,c2 : 1},inplace= True)
+    
+    #shuffling
+    train_set = train_set.sample(frac=1).reset_index(drop=True)
+    test_set = test_set.sample(frac=1).reset_index(drop=True)
+    
     return train_set, test_set
