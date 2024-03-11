@@ -11,8 +11,10 @@ class Adaline:
     def __init__(self, learning_rate, activation_function, EPSILON) -> None:
         self.learning_rate = learning_rate
         self.activation_function = activation_function
-        self.weights = np.array([[0.001], [0.03]])
+        self.weights = np.random.rand(2, 1)
         self.bias = random.random()
+        
+        ## EPSILON AKA MSE threshold
         self.EPSILON = EPSILON
 
 
