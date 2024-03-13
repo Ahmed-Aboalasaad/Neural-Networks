@@ -34,6 +34,7 @@ class Adaline:
             predictions = self.predict(X_train)
             prev_MSE = curr_MSE
             curr_MSE = mean_squared_error(y_train, predictions)
+        
 
     def predict(self, X_test : np.ndarray) -> np.ndarray:
         y = X_test.dot(self.weights) + self.bias
@@ -42,4 +43,7 @@ class Adaline:
 
     def predict_single(self, x1, x2):
         return x1*self.w_1 + x2*self.w_2 + self.w_0
+
+    def get_weights(self):
+        return self.weights, self.bias
     
