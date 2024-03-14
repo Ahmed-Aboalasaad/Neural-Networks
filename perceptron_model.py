@@ -77,101 +77,16 @@ def split_dataset(dataset, c1 : np.ndarray, c2 : np.ndarray, feature1, feature2,
     return train_set, test_set
 
 
-# In[ ]:
-
-
-
-
-
 # In[7]:
 
 
-c1 = 'BOMBAY'
-c2 = 'CALI'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'Perimeter'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-
-# In[8]:
-
-
-train_set
-
-
-# In[9]:
-
-
-test_set
-
-
-# In[10]:
-
-
-# plt.scatter(X[:50, 0], X[:50, 1], color='red', marker='o', label='Setosa')
-# plt.scatter(X[50:100, 0], X[50:100, 1],color='blue', marker='s', label='Versicolor')
-# plt.xlabel('Sepal length [cm]')
-# plt.ylabel('Petal length [cm]')
-# plt.legend(loc='upper left')
-# plt.show()
-
-
-# In[11]:
-
-
-train_set.shape
-
-
-# In[12]:
-
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-
-# In[13]:
-
-
-X
-
-
-# In[14]:
-
-
-y
-
-
-# In[15]:
-
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-
-
-# In[16]:
-
-
-print(X_train.shape)
-print(X_test.shape)
-print(y_train.shape)
-print(y_test.shape)
-
-
-# In[17]:
-
-
 class Perceptron:
-    def __init__(self, learning_rate=0.01, epochs=1000):
-        self.learning_rate = learning_rate
+    def __init__(self, learning_rate=0.01, epochs=1000, bias_flag=True):
+        self.learning_rate = learning_rate 
         self.epochs = epochs
         self.weights = None
         self.bias = None
-    
+        self.bias_flag=bias_flag
     def fit(self, X, y):
         n_samples, n_features = X.shape
         
@@ -192,7 +107,8 @@ class Perceptron:
                 update = self.learning_rate * (y_predicted - y_[idx])
                 
                 self.weights -= update * x_i
-                self.bias -= update
+                if self.bias_flag:
+                    self.bias -= update
         
     
     def predict(self, X):
@@ -204,7 +120,7 @@ class Perceptron:
         return np.where(x>=0, 1, -1)
 
 
-# In[18]:
+# In[8]:
 
 
 def accuracy(y_true, y_pred):
@@ -212,7 +128,7 @@ def accuracy(y_true, y_pred):
     return accuracy
 
 
-# In[19]:
+# In[9]:
 
 
 def confusion_matrix(actual, predicted):
@@ -242,26 +158,55 @@ def confusion_matrix(actual, predicted):
   return confusion_matrix
 
 
-# In[20]:
+# In[10]:
+
+
+c1 = 'BOMBAY'
+c2 = 'CALI'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'Perimeter'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+
+# In[11]:
+
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+
+# In[12]:
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+
+
+# In[13]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[21]:
+# In[14]:
 
 
 model.weights
 
 
-# In[22]:
+# In[15]:
 
 
 model.bias
 
 
-# In[23]:
+# In[16]:
 
 
 predictions = model.predict(X_test)
@@ -273,7 +218,7 @@ predictions = model.predict(X_test)
 
 
 
-# In[24]:
+# In[17]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -281,7 +226,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[25]:
+# In[18]:
 
 
 import matplotlib.pyplot as plt
@@ -302,15 +247,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean area')
+plt.ylabel('bean perimeter')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[26]:
+# In[19]:
 
 
 import matplotlib.pyplot as plt
@@ -344,6 +289,85 @@ plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', 
 # Set labels and legend
 plt.xlabel('bean area')
 plt.ylabel('bean parameter')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[20]:
+
+
+c1 = 'BOMBAY'
+c2 = 'CALI'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'MajorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+
+# In[21]:
+
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+
+# In[22]:
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+
+
+# In[23]:
+
+
+model = Perceptron()
+model.fit(X_train, y_train)
+
+
+# In[24]:
+
+
+predictions = model.predict(X_test)
+
+
+# In[25]:
+
+
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[26]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean major axis length')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -353,85 +377,6 @@ plt.show()
 # In[27]:
 
 
-c1 = 'BOMBAY'
-c2 = 'CALI'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'MajorAxisLength'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-
-# In[28]:
-
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-
-# In[29]:
-
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-
-
-# In[30]:
-
-
-model = Perceptron()
-model.fit(X_train, y_train)
-
-
-# In[31]:
-
-
-predictions = model.predict(X_test)
-
-
-# In[32]:
-
-
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[33]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[34]:
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -461,15 +406,15 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean area')
+plt.ylabel('bean major axes length')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[35]:
+# In[28]:
 
 
 c1 = 'BOMBAY'
@@ -484,7 +429,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[36]:
+# In[29]:
 
 
 # Select only 2 features for visualization purpose
@@ -492,26 +437,26 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[37]:
+# In[30]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[38]:
+# In[31]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[39]:
+# In[32]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[40]:
+# In[33]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -519,7 +464,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[41]:
+# In[34]:
 
 
 import matplotlib.pyplot as plt
@@ -541,14 +486,14 @@ plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='p
 
 # Add labels and legend
 plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.ylabel('bean minor axis lenght')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[42]:
+# In[35]:
 
 
 # Extract weights and bias from the trained model
@@ -575,15 +520,15 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean area')
+plt.ylabel('bean minor axis lenght')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[43]:
+# In[36]:
 
 
 c1 = 'BOMBAY'
@@ -598,7 +543,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[44]:
+# In[37]:
 
 
 # Select only 2 features for visualization purpose
@@ -606,26 +551,26 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[45]:
+# In[38]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[46]:
+# In[39]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[47]:
+# In[40]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[48]:
+# In[41]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -633,7 +578,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[49]:
+# In[42]:
 
 
 import matplotlib.pyplot as plt
@@ -655,14 +600,14 @@ plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='p
 
 # Add labels and legend
 plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[50]:
+# In[43]:
 
 
 # Extract weights and bias from the trained model
@@ -689,15 +634,15 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean area')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[51]:
+# In[44]:
 
 
 c1 = 'BOMBAY'
@@ -712,193 +657,193 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[52]:
+# In[45]:
 
 
 # Select only 2 features for visualization purpose
 X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
+
+
+# In[46]:
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+
+
+# In[47]:
+
+
+model = Perceptron()
+model.fit(X_train, y_train)
+
+
+# In[48]:
+
+
+predictions = model.predict(X_test)
+
+
+# In[49]:
+
+
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[50]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MajorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[51]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MajorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[52]:
+
+
+c1 = 'BOMBAY'
+c2 = 'CALI'
+
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
 # In[53]:
 
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
 
 
 # In[54]:
 
 
-model = Perceptron()
-model.fit(X_train, y_train)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
 # In[55]:
 
 
-predictions = model.predict(X_test)
+model = Perceptron()
+model.fit(X_train, y_train)
 
 
 # In[56]:
 
 
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+predictions = model.predict(X_test)
 
 
 # In[57]:
 
 
-import matplotlib.pyplot as plt
+print(confusion_matrix(y_test, predictions))
 
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[58]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+import matplotlib.pyplot as plt
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+# Predict labels for the test set
+predictions = model.predict(X_test)
 
-# Create the plot
-plt.figure()
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+# Add labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
-
-
-# In[ ]:
-
-
-
 
 
 # In[59]:
 
 
-c1 = 'BOMBAY'
-c2 = 'CALI'
-
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-
-# In[60]:
-
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-
-# In[61]:
-
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-
-
-# In[62]:
-
-
-model = Perceptron()
-model.fit(X_train, y_train)
-
-
-# In[63]:
-
-
-predictions = model.predict(X_test)
-
-
-# In[64]:
-
-
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[65]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[66]:
-
-
 # Extract weights and bias from the trained model
 w1, w2 = model.weights  # Extract weights without bias
 b=model.bias
@@ -923,8 +868,8 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean perimeter')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -937,7 +882,7 @@ plt.show()
 
 
 
-# In[67]:
+# In[60]:
 
 
 c1 = 'BOMBAY'
@@ -952,7 +897,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[68]:
+# In[61]:
 
 
 # Select only 2 features for visualization purpose
@@ -960,26 +905,26 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[69]:
+# In[62]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[70]:
+# In[63]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[71]:
+# In[64]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[72]:
+# In[65]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -987,7 +932,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[73]:
+# In[66]:
 
 
 import matplotlib.pyplot as plt
@@ -1008,15 +953,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[74]:
+# In[67]:
 
 
 # Extract weights and bias from the trained model
@@ -1043,21 +988,21 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[75]:
+# In[68]:
 
 
 data.columns
 
 
-# In[76]:
+# In[69]:
 
 
 c1 = 'BOMBAY'
@@ -1072,7 +1017,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[77]:
+# In[70]:
 
 
 # Select only 2 features for visualization purpose
@@ -1080,26 +1025,26 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[78]:
+# In[71]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[79]:
+# In[72]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[80]:
+# In[73]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[81]:
+# In[74]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -1107,7 +1052,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[82]:
+# In[75]:
 
 
 import matplotlib.pyplot as plt
@@ -1128,15 +1073,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[83]:
+# In[76]:
 
 
 # Extract weights and bias from the trained model
@@ -1163,21 +1108,21 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[84]:
+# In[77]:
 
 
 data.columns
 
 
-# In[85]:
+# In[78]:
 
 
 c1 = 'BOMBAY'
@@ -1192,7 +1137,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[86]:
+# In[79]:
 
 
 # Select only 2 features for visualization purpose
@@ -1200,26 +1145,26 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[87]:
+# In[80]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[88]:
+# In[81]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[89]:
+# In[82]:
 
 
 predictions = model.predict(X_test)
 
 
-# In[90]:
+# In[83]:
 
 
 print(confusion_matrix(y_test, predictions))
@@ -1227,7 +1172,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[91]:
+# In[84]:
 
 
 import matplotlib.pyplot as plt
@@ -1248,15 +1193,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean MajorAxisLenght')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[92]:
+# In[85]:
 
 
 # Extract weights and bias from the trained model
@@ -1283,21 +1228,21 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean MajorAxisLenght')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[93]:
+# In[86]:
 
 
 data.columns
 
 
-# In[94]:
+# In[87]:
 
 
 c1 = 'BOMBAY'
@@ -1312,7 +1257,7 @@ class_train_size = 30
 train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
 
-# In[95]:
+# In[88]:
 
 
 # Select only 2 features for visualization purpose
@@ -1320,28 +1265,222 @@ X = train_set.iloc[:,[0,1]].values
 y = train_set.iloc[:, -1].values
 
 
-# In[96]:
+# In[89]:
 
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
 
 
-# In[97]:
+# In[90]:
 
 
 model = Perceptron()
 model.fit(X_train, y_train)
 
 
-# In[98]:
+# In[91]:
 
 
 predictions = model.predict(X_test)
 
 
+# In[92]:
+
+
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[93]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean MinorAxisLenght')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[94]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean MinorAxisLenght')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[95]:
+
+
+data.columns
+
+
+# In[96]:
+
+
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'Perimeter'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[97]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean parameter')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[98]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean parameter')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
 # In[99]:
 
 
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'MajorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
 print(confusion_matrix(y_test, predictions))
 
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
@@ -1369,7 +1508,7 @@ plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='p
 
 # Add labels and legend
 plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.ylabel('bean MajorAxisLenght')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -1403,8 +1542,8 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean area')
+plt.ylabel('bean MajorAxisLenght')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -1414,14 +1553,484 @@ plt.show()
 # In[102]:
 
 
-data.columns
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'MinorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[103]:
 
 
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean MinorAxisLenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[104]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean MinorAxisLenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[105]:
+
+
 c1 = 'BOMBAY'
-c2 = 'CALI'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[106]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[107]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean area')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[108]:
+
+
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'MajorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[109]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MajorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[110]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MajorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[111]:
+
+
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'MinorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[112]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MinorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[113]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean perimeter')
+plt.ylabel('bean MinorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[114]:
+
+
+c1 = 'BOMBAY'
+c2 = 'SIRA'
+
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[115]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[116]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[117]:
+
+
+c1 = 'BOMBAY'
+c2 = 'SIRA'
 
 feature1 = 'MajorAxisLength'  # Replace with desired feature
 feature2 = 'MinorAxisLength'  # Replace with desired feature
@@ -1447,446 +2056,29 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[104]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[105]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[106]:
-
-
-data.columns
-
-
-# In[107]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'Perimeter'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[108]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[109]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[110]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[111]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[112]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[113]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[114]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[115]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[116]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[117]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
 # In[118]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+import matplotlib.pyplot as plt
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+# Predict labels for the test set
+predictions = model.predict(X_test)
 
-# Create the plot
-plt.figure()
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+# Add labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -1896,286 +2088,39 @@ plt.show()
 # In[119]:
 
 
-c1 = 'BOMBAY'
-c2 = 'SIRA'
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-class_train_size = 30
+# Create the plot
+plt.figure()
 
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Set labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
 
 
 # In[120]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[121]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[122]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[123]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[124]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[125]:
-
-
-c1 = 'BOMBAY'
-c2 = 'SIRA'
-
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[126]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[127]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[128]:
 
 
 c1 = 'BOMBAY'
@@ -2205,7 +2150,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[129]:
+# In[121]:
 
 
 import matplotlib.pyplot as plt
@@ -2226,15 +2171,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[130]:
+# In[122]:
 
 
 # Extract weights and bias from the trained model
@@ -2261,15 +2206,15 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[131]:
+# In[123]:
 
 
 c1 = 'BOMBAY'
@@ -2299,7 +2244,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[132]:
+# In[124]:
 
 
 import matplotlib.pyplot as plt
@@ -2320,15 +2265,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean MinorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[133]:
+# In[125]:
 
 
 # Extract weights and bias from the trained model
@@ -2355,8 +2300,8 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean MinorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
@@ -2369,13 +2314,13 @@ plt.show()
 
 
 
-# In[134]:
+# In[126]:
 
 
 data.columns
 
 
-# In[135]:
+# In[127]:
 
 
 c1 = 'CALI'
@@ -2405,7 +2350,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[136]:
+# In[128]:
 
 
 import matplotlib.pyplot as plt
@@ -2434,7 +2379,7 @@ plt.legend(loc='upper left')
 plt.show()
 
 
-# In[137]:
+# In[129]:
 
 
 # Extract weights and bias from the trained model
@@ -2469,7 +2414,7 @@ plt.legend(loc='upper left')
 plt.show()
 
 
-# In[138]:
+# In[130]:
 
 
 c1 = 'CALI'
@@ -2499,7 +2444,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[139]:
+# In[131]:
 
 
 import matplotlib.pyplot as plt
@@ -2520,758 +2465,758 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean Area')
+plt.ylabel('bean major axis lenght')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
+
+
+# In[132]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean Area')
+plt.ylabel('bean major axis lenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[133]:
+
+
+c1 = 'CALI'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'MinorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[134]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean Area')
+plt.ylabel('bean minor axis lenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[135]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean Area')
+plt.ylabel('bean minor axis lenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[136]:
+
+
+c1 = 'CALI'
+c2 = 'SIRA'
+
+feature1 = 'Area'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+
+
+# In[137]:
+
+
+import matplotlib.pyplot as plt
+
+# Predict labels for the test set
+predictions = model.predict(X_test)
+
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean Area')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[138]:
+
+
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
+
+# Create the plot
+plt.figure()
+
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean Area')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
+
+
+# In[139]:
+
+
+c1 = 'CALI'
+c2 = 'SIRA'
+
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'MajorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
+
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[140]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+import matplotlib.pyplot as plt
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+# Predict labels for the test set
+predictions = model.predict(X_test)
 
-# Create the plot
-plt.figure()
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+# Add labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean MajorAxisLenght')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
-
-
-# In[ ]:
-
-
-
 
 
 # In[141]:
 
 
-c1 = 'CALI'
-c2 = 'SIRA'
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'MinorAxisLength'  # Replace with desired feature
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-class_train_size = 30
+# Create the plot
+plt.figure()
 
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Set labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean MajorAxisLenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
 
 
 # In[142]:
 
 
-import matplotlib.pyplot as plt
+c1 = 'CALI'
+c2 = 'SIRA'
 
-# Predict labels for the test set
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'MinorAxisLength'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
 predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
 
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[143]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+import matplotlib.pyplot as plt
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+# Predict labels for the test set
+predictions = model.predict(X_test)
 
-# Create the plot
-plt.figure()
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+# Add labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean MinorAxisLenght')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
-
-
-# In[ ]:
-
-
-
 
 
 # In[144]:
 
 
-c1 = 'CALI'
-c2 = 'SIRA'
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-feature1 = 'Area'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-class_train_size = 30
+# Create the plot
+plt.figure()
 
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Set labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean MinorAxisLenght')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
+
+
+# In[ ]:
+
+
+
 
 
 # In[145]:
 
 
-import matplotlib.pyplot as plt
+c1 = 'CALI'
+c2 = 'SIRA'
 
-# Predict labels for the test set
+feature1 = 'Perimeter'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
+
+class_train_size = 30
+
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
+
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
 predictions = model.predict(X_test)
 
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+print(confusion_matrix(y_test, predictions))
 
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[146]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+import matplotlib.pyplot as plt
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+# Predict labels for the test set
+predictions = model.predict(X_test)
 
-# Create the plot
-plt.figure()
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+# Add labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
-
-
-# In[ ]:
-
-
-
 
 
 # In[147]:
 
 
-c1 = 'CALI'
-c2 = 'SIRA'
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'MinorAxisLength'  # Replace with desired feature
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-class_train_size = 30
+# Create the plot
+plt.figure()
 
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Set labels and legend
+plt.xlabel('bean Perimeter')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
 
 
 # In[148]:
 
 
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
+data.columns
 
 
 # In[149]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+c1 = 'CALI'
+c2 = 'SIRA'
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+feature1 = 'MajorAxisLength'  # Replace with desired feature
+feature2 = 'MinorAxisLength'  # Replace with desired feature
 
-# Create the plot
-plt.figure()
+class_train_size = 30
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
+print(confusion_matrix(y_test, predictions))
 
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[ ]:
-
-
-
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[150]:
 
 
-c1 = 'CALI'
-c2 = 'SIRA'
+import matplotlib.pyplot as plt
 
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'MinorAxisLength'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
+# Predict labels for the test set
 predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
 
 
 # In[151]:
 
 
-import matplotlib.pyplot as plt
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-# Predict labels for the test set
-predictions = model.predict(X_test)
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+# Create the plot
+plt.figure()
 
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean MinorAxisLength')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
+
+
+# In[ ]:
+
+
+
 
 
 # In[152]:
 
 
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+c1 = 'CALI'
+c2 = 'SIRA'
 
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
+feature1 = 'MajorAxisLength'  # Replace with desired feature
+feature2 = 'roundnes'  # Replace with desired feature
 
-# Create the plot
-plt.figure()
+class_train_size = 30
 
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
+# Split the data using the provided function
+train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
 
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
+# Select only 2 features for visualization purpose
+X = train_set.iloc[:,[0,1]].values
+y = train_set.iloc[:, -1].values
 
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+#split data into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
+#call the perceptron model and fit the data
+model = Perceptron()
+model.fit(X_train, y_train)
+#predict on test data
+predictions = model.predict(X_test)
 
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
+print(confusion_matrix(y_test, predictions))
 
-# Show the plot
-plt.show()
-
-
-# In[ ]:
-
-
-
+print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
 # In[153]:
 
 
-c1 = 'CALI'
-c2 = 'SIRA'
+import matplotlib.pyplot as plt
 
-feature1 = 'Perimeter'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
+# Predict labels for the test set
 predictions = model.predict(X_test)
 
-print(confusion_matrix(y_test, predictions))
+# Create a scatter plot for training data
+plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
+plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
 
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
+# Create a scatter plot for testing data, make them a bit grayish
+plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
+plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+
+# Create a scatter plot for predictions on the test data
+plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
+plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+
+# Add labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean roundnes')
+plt.legend(loc='upper left')
+
+# Show the plot
+plt.show()
 
 
 # In[154]:
 
 
-import matplotlib.pyplot as plt
+# Extract weights and bias from the trained model
+w1, w2 = model.weights  # Extract weights without bias
+b=model.bias
+# Define x-axis range (adjust based on your data)
+x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
 
-# Predict labels for the test set
-predictions = model.predict(X_test)
+# Calculate corresponding y-values for the line equation
+y_values = (-w1 / w2) * x_range - (b / w2)
 
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
+# Create the plot
+plt.figure()
 
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
+# Plot the decision boundary line
+plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
 
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
+# Plot training points (assuming appropriate colors and markers)
+plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
+plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
 
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+# Plot testing points (assuming appropriate colors and markers)
+plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
+plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
+
+# Set labels and legend
+plt.xlabel('bean MajorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
+
+
+# In[ ]:
+
+
+
 
 
 # In[155]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[156]:
-
-
-data.columns
-
-
-# In[157]:
-
-
-c1 = 'CALI'
-c2 = 'SIRA'
-
-feature1 = 'MajorAxisLength'  # Replace with desired feature
-feature2 = 'MinorAxisLength'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[158]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[159]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[ ]:
-
-
-
-
-
-# In[160]:
-
-
-c1 = 'CALI'
-c2 = 'SIRA'
-
-feature1 = 'MajorAxisLength'  # Replace with desired feature
-feature2 = 'roundnes'  # Replace with desired feature
-
-class_train_size = 30
-
-# Split the data using the provided function
-train_set, test_set = split_dataset(data, c1, c2, feature1, feature2, class_train_size)
-
-# Select only 2 features for visualization purpose
-X = train_set.iloc[:,[0,1]].values
-y = train_set.iloc[:, -1].values
-
-#split data into train and test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=123)
-#call the perceptron model and fit the data
-model = Perceptron()
-model.fit(X_train, y_train)
-#predict on test data
-predictions = model.predict(X_test)
-
-print(confusion_matrix(y_test, predictions))
-
-print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
-
-
-# In[161]:
-
-
-import matplotlib.pyplot as plt
-
-# Predict labels for the test set
-predictions = model.predict(X_test)
-
-# Create a scatter plot for training data
-plt.scatter(X_train[y_train==-1][:, 0], X_train[y_train==-1][:, 1], color='blue', label='BOMBAY - Train')
-plt.scatter(X_train[y_train==1][:, 0], X_train[y_train==1][:, 1], color='red', label='CALI - Train')
-
-# Create a scatter plot for testing data, make them a bit grayish
-plt.scatter(X_test[y_test==-1][:, 0], X_test[y_test==-1][:, 1], color='lightblue', label='BOMBAY - Test')
-plt.scatter(X_test[y_test==1][:, 0], X_test[y_test==1][:, 1], color='pink', label='CALI - Test')
-
-# Create a scatter plot for predictions on the test data
-plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color='lightblue', marker='x', label='Predicted BOMBAY')
-plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
-
-# Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[162]:
-
-
-# Extract weights and bias from the trained model
-w1, w2 = model.weights  # Extract weights without bias
-b=model.bias
-# Define x-axis range (adjust based on your data)
-x_range = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
-
-# Calculate corresponding y-values for the line equation
-y_values = (-w1 / w2) * x_range - (b / w2)
-
-# Create the plot
-plt.figure()
-
-# Plot the decision boundary line
-plt.plot(x_range, y_values, color='black', linewidth=2, label='Decision Boundary')
-
-# Plot training points (assuming appropriate colors and markers)
-plt.scatter(X_train[y_train == -1][:, 0], X_train[y_train == -1][:, 1], color='blue', label='BOMBAY (Train)')
-plt.scatter(X_train[y_train == 1][:, 0], X_train[y_train == 1][:, 1], color='red', label='CALI (Train)')
-
-# Plot testing points (assuming appropriate colors and markers)
-plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='lightblue', label='BOMBAY (Test)')
-plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
-
-# Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
-plt.legend(loc='upper left')
-
-# Show the plot
-plt.show()
-
-
-# In[ ]:
-
-
-
-
-
-# In[163]:
 
 
 c1 = 'CALI'
@@ -3301,7 +3246,7 @@ print(confusion_matrix(y_test, predictions))
 print(f'Perceptron classification accuracy: {accuracy(y_test, predictions)}')
 
 
-# In[164]:
+# In[156]:
 
 
 import matplotlib.pyplot as plt
@@ -3322,15 +3267,15 @@ plt.scatter(X_test[predictions==-1][:, 0], X_test[predictions==-1][:, 1], color=
 plt.scatter(X_test[predictions==1][:, 0], X_test[predictions==1][:, 1], color='pink', marker='x', label='Predicted CALI')
 
 # Add labels and legend
-plt.xlabel('bean area')
-plt.ylabel('bean parameter')
+plt.xlabel('bean MinorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
 plt.show()
 
 
-# In[165]:
+# In[157]:
 
 
 # Extract weights and bias from the trained model
@@ -3357,8 +3302,8 @@ plt.scatter(X_test[y_test == -1][:, 0], X_test[y_test == -1][:, 1], color='light
 plt.scatter(X_test[y_test == 1][:, 0], X_test[y_test == 1][:, 1], color='pink', label='CALI (Test)')
 
 # Set labels and legend
-plt.xlabel('Sepal length [cm]')
-plt.ylabel('Petal length [cm]')
+plt.xlabel('bean MinorAxisLength')
+plt.ylabel('bean roundnes')
 plt.legend(loc='upper left')
 
 # Show the plot
