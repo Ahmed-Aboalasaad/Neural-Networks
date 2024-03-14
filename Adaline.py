@@ -8,20 +8,21 @@ def mean_squared_error(y_true, y_pred):
 
 
 class Adaline:
-    def __init__(self, learning_rate, activation_function, EPSILON) -> None:
+    def __init__(self, learning_rate , EPSILON, include_bias) -> None:
         self.learning_rate = learning_rate
-        self.activation_function = activation_function
+        self.EPSILON = EPSILON  ## EPSILON AKA MSE THRESHOLD
         self.weights = np.random.rand(2, 1)
-        self.bias = random.random()
-        
-        ## EPSILON AKA MSE threshold
-        self.EPSILON = EPSILON
-
+        self.include_bias = include_bias
+        if include_bias:
+            self.bias = random.random()
+        else:
+            self.bias = 0
 
     def update_weights(self, total_error, X_train):
             self.weights[0] = self.weights[0] + ((self.learning_rate*total_error)*X_train[:, 0]).sum()
             self.weights[1] = self.weights[1] + ((self.learning_rate*total_error)*X_train[:, 1]).sum()
-            self.bias = self.bias + self.learning_rate*total_error
+            if self.include_bias:
+                self.bias = self.bias + self.learning_rate*total_error
 
             
     def fit(self, X_train, y_train) -> None:
@@ -34,16 +35,14 @@ class Adaline:
             predictions = self.predict(X_train)
             prev_MSE = curr_MSE
             curr_MSE = mean_squared_error(y_train, predictions)
-        
 
     def predict(self, X_test : np.ndarray) -> np.ndarray:
         y = X_test.dot(self.weights) + self.bias
-        a = np.vectorize(self.activation_function)(y)
+        a = np.vectorize(activation_functions.identity)(y)
         return a
 
     def predict_single(self, x1, x2):
         return x1*self.w_1 + x2*self.w_2 + self.w_0
-
+        
     def get_weights(self):
-        return self.weights, self.bias
-    
+        return self.weights[0][0], self.weights[1][0] , self.bias
