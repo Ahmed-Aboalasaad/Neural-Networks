@@ -20,7 +20,7 @@ def split_dataset(dataset, c1 : np.ndarray, c2 : np.ndarray, feature1, feature2,
     test_set.replace({c1 : -1,c2 : 1},inplace= True)
     
     #shuffling
-    train_set = train_set.sample(frac=1).reset_index(drop=True)
-    test_set = test_set.sample(frac=1).reset_index(drop=True)
+    train_set = train_set.sample(frac=1, random_state = 42).reset_index(drop=True)
+    test_set = test_set.sample(frac=1, random_state = 42).reset_index(drop=True)
     X_train, X_test, y_train, y_test = train_set.drop(['Class'], axis=1).values,  test_set.drop(['Class'], axis=1).values, train_set['Class'].values.reshape(60, 1)  , test_set['Class'].values.reshape(40, 1)
     return X_train, X_test, y_train, y_test
