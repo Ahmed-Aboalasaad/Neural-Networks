@@ -7,6 +7,7 @@ class Perceptron:
         self.weights = None
         self.bias = None
         self.bias_flag=bias_flag
+
     def fit(self, X, y):
         n_samples, n_features = X.shape
         # initialize weights and bias
@@ -29,13 +30,11 @@ class Perceptron:
                 self.weights -= update * x_i
                 if self.bias_flag:
                     self.bias -= update
-        
-    
+
     def predict(self, X):
         linear_output = np.dot(X, self.weights) + self.bias
         y_predicted = self.activation_function(linear_output)
         return y_predicted
-    
+
     def activation_function(self, x):
         return np.where(x>=0, 1, -1)
-
