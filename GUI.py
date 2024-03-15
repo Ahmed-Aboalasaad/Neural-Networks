@@ -16,46 +16,46 @@ data = pd.read_csv("final_file.csv")
 
 # __ GUI Functionalitites __ #
 def train_when_clicked():
-    global w1, w2, b, accuracy, mse, C_F, X_train, X_test, y_train, y_test
-    feature1 = cmb_feature1.get()
-    feature2 = cmb_feature2.get()
+    global w1, w2, b, accuracy, EPSILON, C_F, X_train, X_test, y_train, y_test
+    feat1 = cmb_feature1.get()
+    feat2 = cmb_feature2.get()
     class1 = cmb_class1.get()
     class2 = cmb_class2.get()
-    learning_rate = float(txt_learning_rate.get())
+    alpha = float(txt_learning_rate.get())
     bias = var.get()
     model = radio_button_state.get()
     epochs = None
     EPSILON = None
-    
-    # perceptron
-    if model == 1:
-        epochs = int(txt_epochs.get())
-    # adaline
-    else:
-        EPSILON = float(txt_MSE.get())
 
-    X_train, X_test, y_train, y_test = splitter.split_dataset(data, class1, class2, feature1, feature2, 30)
-    
+    if model == 1: ## perceptron
+        epochs = int(txt_epochs.get())
+    else:          ## adaline
+        EPSILON = float(txt_MSE_threshold.get())
+
+    X_train, X_test, y_train, y_test = splitter.split_dataset(data, class1, class2, feat1, feat2, 30)
+
     if model == 1:
-        _model = SLP.Perceptron(learning_rate= learning_rate, epochs=epochs, bias_flag=bias)
+        _model = SLP.Perceptron(learning_rate= alpha, epochs= epochs, bias_flag= bias)
         _model.fit(X_train, y_train)
         w1, w2, b = _model.weights[0], _model.weights[1], _model.bias
         predictions = _model.predict(X_test).reshape(40, 1)
         C_F = metrics.confusion_matrix(y_test, predictions)
         accuracy = metrics.accuracy(y_test, predictions)
 
-    if model == 2:  ## ignore until Adaline is fixed
-        pass
-        # _model = Adaline(learning_rate= learning_rate, EPSILON= EPSILON, include_bias= bias)
-        # _model.fit(X_train, y_train)
-        # w1, w2, b = _model.get_weights()
-        # print(_model.get_weights())
+    if model == 2:
+        _model = Adaline(learning_rate= alpha, EPSILON= EPSILON, include_bias= bias)
+        _model.fit(X_train, y_train)
+        w1, w2, b = _model.get_weights()
+        print(_model.get_weights())
 
 
 def show_evaluation():
     metric.delete(0, END)
-    metric.insert(0, str(accuracy))
-
+    if radio_button_state.get() == 1: # SLP metric
+        metric.insert(0, str(accuracy))
+    else: # Adaline metric
+        pass
+        # metrics.mean_squared_error(y_test, )   # Mahmoud should calculate the metric here
 
 def show_confusion_matrix():
     plt.figure(figsize=(8, 6))
@@ -64,10 +64,6 @@ def show_confusion_matrix():
     plt.ylabel('True labels')
     plt.title('Confusion Matrix', fontsize=20)
     plt.show()
-
-
-def test():
-    pass
 
 
 def test():
@@ -172,12 +168,12 @@ txt_epochs = Entry(form , justify= 'center' , width= 10)
 txt_epochs.place(x= 370 , y= 130)
 
 # MSE Threshold Label
-label_MSE = Label(form , text= 'MSE threshold' , fg='black' , bg= background_color)
-label_MSE.place(x= 20 , y= 180)
+label_MSE_threshold = Label(form , text= 'MSE threshold' , fg='black' , bg= background_color)
+label_MSE_threshold.place(x= 20 , y= 180)
 
 # MSE Threshold Text Box
-txt_MSE = Entry(form , justify= 'center' , width= 15)
-txt_MSE.place(x= 120 , y= 180)
+txt_MSE_threshold = Entry(form , justify= 'center' , width= 15)
+txt_MSE_threshold.place(x= 120 , y= 180)
 
 
 ### Add Bias?
