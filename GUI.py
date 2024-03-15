@@ -16,7 +16,7 @@ data = pd.read_csv("final_file.csv")
 
 # __ GUI Functionalitites __ #
 def train_when_clicked():
-    global w1, w2, b, accuracy, EPSILON, C_F, X_train, X_test, y_train, y_test
+    global w1, w2, b, metric, EPSILON, C_F, X_train, X_test, y_train, y_test
     feat1 = cmb_feature1.get()
     feat2 = cmb_feature2.get()
     class1 = cmb_class1.get()
@@ -40,22 +40,21 @@ def train_when_clicked():
         w1, w2, b = _model.weights[0], _model.weights[1], _model.bias
         predictions = _model.predict(X_test).reshape(40, 1)
         C_F = metrics.confusion_matrix(y_test, predictions)
-        accuracy = metrics.accuracy(y_test, predictions)
+        metric = metrics.accuracy(y_test, predictions)
 
     if model == 2:
         _model = Adaline(learning_rate= alpha, EPSILON= EPSILON, include_bias= bias)
         _model.fit(X_train, y_train)
         w1, w2, b = _model.get_weights()
         print(_model.get_weights())
+        predictions = _model.predict(X_test)
+        # C_F = metrics.confusion_matrix(y_test, predictions)
+        metric = metrics.mean_squared_error(y_test, predictions)
 
 
 def show_evaluation():
-    metric.delete(0, END)
-    if radio_button_state.get() == 1: # SLP metric
-        metric.insert(0, str(accuracy))
-    else: # Adaline metric
-        pass
-        # metrics.mean_squared_error(y_test, )   # Mahmoud should calculate the metric here
+    txt_metric.delete(0, END)
+    txt_metric.insert(0, str(metric))
 
 def show_confusion_matrix():
     plt.figure(figsize=(8, 6))
@@ -256,8 +255,8 @@ label_MSE_accuracy = Label(form , text= 'MSE/Accuracy' , fg='black' , bg= backgr
 label_MSE_accuracy.place(x= 150 , y= 580)
 
 # Metric Text Box (only for showing)
-metric = Entry(form , justify= 'center' , width= 15)
-metric.place(x= 240 , y= 580)
+txt_metric = Entry(form , justify= 'center' , width= 15)
+txt_metric.place(x= 240 , y= 580)
 
 # Evaluation Button
 btn_evalute = Button(form, text='evaluate', fg='black', bg='white', width=15, command=show_evaluation)
