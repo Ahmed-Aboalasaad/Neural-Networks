@@ -27,7 +27,6 @@ def confusion_matrix(actual, predicted):
   return confusion_matrix
 
 
-
 def mean_squared_error(y_true, y_pred):
     return np.sum((y_true - y_pred)**2) / len(y_true)
 
