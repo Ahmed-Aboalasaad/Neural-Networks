@@ -65,17 +65,17 @@ class MultiLayerPerceptron:
 
             
             ## backward step [calculating partial errors]
-            net_of_output_layer = net_outputs[len(net_outputs)-1]
-            errors_in_last_layer = y - current[len(current)-1]
-            output_layer_gradient = errors_in_last_layer *  self.np.vectorize(self.activation_function_derivative)(net_of_output_layer)
-            for i in range(self.number_of_hidden_layers+1, -1, -1):
-                pass
+            #net_of_output_layer = net_outputs[len(net_outputs)-1]
+            #errors_in_last_layer = y - current[len(current)-1]
+            #output_layer_gradient = errors_in_last_layer *  self.np.vectorize(self.activation_function_derivative)(net_of_output_layer)
+            #for i in range(self.number_of_hidden_layers+1, -1, -1):
+                #pass
                 
 
 
             ## forward step2 [updating weights]
 
-        pass
+            pass
 
 
 
