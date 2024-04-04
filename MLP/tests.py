@@ -1,29 +1,23 @@
 import numpy as np 
+import activation_functions
+
+
+# gradients = [np.zeros((1, n_neurons)) for n_neurons in [3, 3, 2]]
+# net_outputs = [np.array([5, 8, 6]), np.array([6, 4, 9]), np.array([6, 4])]
+# hidden_layers_number = 2
+# output_layer_error = np.array([5, 6])
+# gradients[hidden_layers_number][:] = output_layer_error * np.vectorize(activation_functions.d_Sigmoid)(net_outputs[hidden_layers_number])
+
+# print(gradients[hidden_layers_number])
 
 
 
+lst = [1,2,3,4]
+hidden_number = 3
 
 
-
-X = np.array([[1,2,3,4], [4,3,5,3], [1,2,3,3]])
-X_shape = X.shape
-print(X_shape)
-o =np.ones((X_shape[0],X_shape[1]+1))
-o[:, 0:X_shape[1]] = X
-print(o)
-
-
-
-
-
-
-
-
-
-
-
-
-
+for i in range(hidden_number-1, -1, -1):
+    print(lst[i])
 
 
 
