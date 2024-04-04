@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import commands as cmd
 from tkinter import filedialog as fd
 import MultiLayerPerceptron
 
