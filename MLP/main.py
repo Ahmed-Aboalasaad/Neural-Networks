@@ -29,7 +29,7 @@ def debug():
     print(bias)
     
 
-def Train_MLP():
+def train_MLP():
     
     global input_size, output_size, neurons_per_layer, activation_function, bias, number_of_layers
     global epochs, learning_rate, train_to_all_ratio
@@ -183,7 +183,7 @@ train_to_all_ratio_label.place(x=LABELS_LEFT_ALIGNMENT2 , y=depth+chunk*2)
 
 
 #train button
-train_button = tk.Button(master, command= Train_MLP, text='Train')
+train_button = tk.Button(master, command= train_MLP, text='Train')
 train_button.place(x=WIDGETS_LEFT_ALIGNMENT1-50, y=320, height=25, width=105)
 
 current_state = 'off'
@@ -192,7 +192,7 @@ train_status_label.place(x=WIDGETS_LEFT_ALIGNMENT1-40 , y=350)
 
 
 #test button
-train_button = tk.Button(master, command= Train_MLP, text='Test')
+train_button = tk.Button(master, command= train_MLP, text='Test')
 train_button.place(x=WIDGETS_LEFT_ALIGNMENT1-50, y=370, height=25, width=105)
 
 

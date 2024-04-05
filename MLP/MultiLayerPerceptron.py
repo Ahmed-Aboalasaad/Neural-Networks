@@ -20,9 +20,9 @@ class MultiLayerPerceptron:
                  input_size : int, 
                  output_size : int, 
                  hidden_layers_number : int, 
-                 neurons_per_layer : list, 
+                 neurons_per_layer : list,  # number of neurons in each hidden layer
                  learning_rate : float, 
-                 activation_function, # lambda expression
+                 activation_function, # a string that get parsed to a lambda expression
                  epochs : float,
                  add_bias : bool,
                  seed : int) -> None:
@@ -37,53 +37,52 @@ class MultiLayerPerceptron:
         self.epochs = epochs
         self.add_bias = add_bias
         np.random.seed(seed)
-        
-        ## initializing weights between all layers
-        self.list_of_weights = self.__init_weights()
+        self.weights = self.__init_weights()  # initializing weights between ALL layers
 
 
 
     def fit(self, X: np.array, y: np.array):
         self.data_size = X.shape[0]
-        self.list_of_weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
+        self.weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
         ## append 1 at the end of each record if add_bias is true
         if self.add_bias:
             X = self.__add_ones(X)
         
         # List of lists: each of which has the net outputs of a layer
-        net_outputs = []
-        for j in range(self.epochs):    
-            current = X
+        for j in range(self.epochs):
+            outputs = []
+            current_input = X
 
             ### Feeding Forward [calculating output]
             for i in range(self.hidden_layers_number + 1):
-                current_net_output = current.dot(self.list_of_weights[i]) # input * Weights 
-                net_outputs.append(current_net_output)
+                output = current_input.dot(self.weights[i]) # input * Weights 
+                outputs.append(output)
 
-                activation = self.activation_function(current_net_output)
-                current = activation
-                # if it's not the output layer
+                activation = self.activation_function(output)
+                current_input = activation
+                # if it's not the output layer & the user asked for bias
                 if i != self.hidden_layers_number and self.add_bias:
-                    current = self.__add_ones(current)
+                    current_input = self.__add_ones(current_input)
 
             
             ### backward step [calculating cost gradients with respect to neurons]
-            output_layer_error = y - current  # error calculated in output layer
+            output_layer_error = y - current_input  # error calculated in output layer
 
             # initializing gradients array
             gradients = [np.zeros((1, n_neurons)) for n_neurons in self.neurons_per_layer]
             gradients.append(np.zeros((1, self.output_size)))
 
             # Output-layer gradient
-            gradients[self.hidden_layers_number][:] = (output_layer_error * self.activation_function_derivative(net_outputs[self.hidden_layers_number])).sum(axis=0)/self.data_size
+            gradients[self.hidden_layers_number][:] = (output_layer_error * self.activation_function_derivative(outputs[self.hidden_layers_number])).sum(axis=0)/self.data_size
             # Calculate cost gradients with respect to neurons in hidden layers
             for i in range(self.hidden_layers_number - 1, -1, -1):
-                gn_t_w = gradients[i+1].dot(self.list_of_weights[i+1][:-1].T)
-                gradients[i][:] = gn_t_w * self.activation_function_derivative(net_outputs[i]).sum(axis=0)
-                
+                gn_t_w = gradients[i+1].dot(self.weights[i+1][:-1].T)
+                gradients[i][:] = gn_t_w * self.activation_function_derivative(outputs[i]).sum(axis=0)
+            print(gradients)    
                 
             ## forward step2 [updating weights]
             
+
 
 
 
@@ -94,20 +93,21 @@ class MultiLayerPerceptron:
 
     def __init_weights(self):
         '''
-        Initializes the list of weights with numpy arrays filled with a proper number of random weights
+        Initializes the weights list with np arrays filled with a proper number of random weights each
         '''
-        list_of_weights = []
+        weights = []
 
-        neurons_per_all_layers = [self.input_size]
-        neurons_per_all_layers.extend(self.neurons_per_layer)
-        neurons_per_all_layers.append(self.output_size)
+        # [2, 4, 1] means 2 neurons in input layer, 4 neurons in the single hidden layer, and 1 output neuron in the output layer
+        neurons_count = [self.input_size]
+        neurons_count.extend(self.neurons_per_layer)
+        neurons_count.append(self.output_size)
         shortcut = 1 if self.add_bias else 0
 
         for i in range(self.hidden_layers_number+1):
-            weights_arr = np.random.rand(neurons_per_all_layers[i] + shortcut, neurons_per_all_layers[i+1])
-            list_of_weights.append(weights_arr)
+            weights_arr = np.random.rand(neurons_count[i] + shortcut, neurons_count[i+1])
+            weights.append(weights_arr)
 
-        return list_of_weights
+        return weights
     
 
     def __add_ones(self, X):
@@ -120,4 +120,4 @@ class MultiLayerPerceptron:
         return X_with_ones
 
     def get_weights(self):
-        return self.list_of_weights
+        return self.weights
