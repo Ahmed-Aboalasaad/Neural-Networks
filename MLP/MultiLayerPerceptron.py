@@ -37,52 +37,58 @@ class MultiLayerPerceptron:
         self.epochs = epochs
         self.add_bias = add_bias
         np.random.seed(seed)
-        self.weights = self.__init_weights()  # initializing weights between ALL layers
+        self.__init_weights()  # initializing weights between ALL layers
 
 
 
     def fit(self, X: np.array, y: np.array):
-        self.data_size = X.shape[0]
-        self.weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
-        ## append 1 at the end of each record if add_bias is true
+        self.examples_number = X.shape[0]
+        # self.weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
         if self.add_bias:
             X = self.__add_ones(X)
         
-        # List of lists: each of which has the net outputs of a layer
         for j in range(self.epochs):
-            outputs = []
-            current_input = X
+            net_inputs = []  # List of lists: each of which has the net input of a layer
+            input = X
 
-            ### Feeding Forward [calculating output]
+            ### Feeding Forward
             for i in range(self.hidden_layers_number + 1):
-                output = current_input.dot(self.weights[i]) # input * Weights 
-                outputs.append(output)
+                # calculate activations 
+                net_input = input.dot(self.weights[i]) # input [dot product] Weights
+                net_inputs.append(net_input)
+                activation = self.activation_function(net_input)
 
-                activation = self.activation_function(output)
-                current_input = activation
-                # if it's not the output layer & the user asked for bias
-                if i != self.hidden_layers_number and self.add_bias:
-                    current_input = self.__add_ones(current_input)
+                # The activation in the current iteration will be the input for the next one
+                input = activation
+                # if the user asked for bias & it's not the last activation
+                if self.add_bias and i != self.hidden_layers_number:
+                    input = self.__add_ones(input)
 
             
-            ### backward step [calculating cost gradients with respect to neurons]
-            output_layer_error = y - current_input  # error calculated in output layer
-
-            # initializing gradients array
-            gradients = [np.zeros((1, n_neurons)) for n_neurons in self.neurons_per_layer]
+            ### Back Probagation            
+            gradients = [np.zeros((1, i)) for i in self.neurons_per_layer]
             gradients.append(np.zeros((1, self.output_size)))
 
-            # Output-layer gradient
-            gradients[self.hidden_layers_number][:] = (output_layer_error * self.activation_function_derivative(outputs[self.hidden_layers_number])).sum(axis=0)/self.data_size
-            # Calculate cost gradients with respect to neurons in hidden layers
+            # Cost gradients with respect to output-layer neurons
+            output_layer_error = y - input  # at this point, input variable holds the actiavation of the output neurons
+            gradients[self.hidden_layers_number][:] = ((output_layer_error/self.examples_number) * self.activation_function_derivative(net_inputs[self.hidden_layers_number])).sum(axis=0)
+
+            # Cost gradients with respect to hidden layers neurons
             for i in range(self.hidden_layers_number - 1, -1, -1):
                 gn_t_w = gradients[i+1].dot(self.weights[i+1][:-1].T)
-                gradients[i][:] = gn_t_w * self.activation_function_derivative(outputs[i]).sum(axis=0)
-            print(gradients)    
-                
-            ## forward step2 [updating weights]
-            
+                gradients[i][:] = gn_t_w * self.activation_function_derivative(net_inputs[i]).sum(axis=0)
 
+
+            ## forward step2 [updating weights]
+            # I (as a non-input neuron) update the weights that get into me using my gradient
+            # weight update equation: new = old + learning_rage * my gradient * input value through this weight
+            
+            # iterate over weight clusters
+            for cluster in self.weights:
+                
+                # iterate over neurons
+                
+                    # apply the update equation
 
 
 
@@ -97,22 +103,20 @@ class MultiLayerPerceptron:
         '''
         weights = []
 
-        # [2, 4, 1] means 2 neurons in input layer, 4 neurons in the single hidden layer, and 1 output neuron in the output layer
+        # [2, 4, 1] means 2 neurons in input layer, 4 neurons in a single hidden layer, and 1 output neuron in the output layer
         neurons_count = [self.input_size]
         neurons_count.extend(self.neurons_per_layer)
         neurons_count.append(self.output_size)
         shortcut = 1 if self.add_bias else 0
 
-        for i in range(self.hidden_layers_number+1):
-            weights_arr = np.random.rand(neurons_count[i] + shortcut, neurons_count[i+1])
-            weights.append(weights_arr)
-
-        return weights
-    
+        for i in range(self.hidden_layers_number + 1):
+            current_next_weights = np.random.rand(neurons_count[i] + shortcut, neurons_count[i+1])
+            weights.append(current_next_weights)
+        self.weights = weights    
 
     def __add_ones(self, X):
         '''
-        Adding ones weights to compute the bias (represented as extra input)
+        Adding ones weights to the weights matrix as if the bias is an extra input
         '''
         X_shape = X.shape
         X_with_ones =np.ones((X_shape[0],X_shape[1]+1))

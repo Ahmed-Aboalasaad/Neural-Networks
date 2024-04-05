@@ -1,5 +1,7 @@
 import numpy as np 
 import activation_functions
+import pandas as pd
+from MultiLayerPerceptron import MultiLayerPerceptron
 
 
 # gradients = [np.zeros((1, n_neurons)) for n_neurons in [3, 3, 2]]
@@ -12,13 +14,11 @@ import activation_functions
 
 
 
-lst = [1,2,3,4]
-hidden_number = 3
+df = pd.DataFrame([[0.3, 0.7], [0.9,0.5]], columns=['x1', 'x2'])
+print(df.head())
 
-
-for i in range(hidden_number-1, -1, -1):
-    print(lst[i])
-
+mlp = MultiLayerPerceptron(2, 2, 2, [4, 3], 1, 'Sigmoid', 1, True, 74)
+print(mlp.weights[0])
 
 
 
