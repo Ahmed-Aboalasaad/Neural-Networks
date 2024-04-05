@@ -37,20 +37,22 @@ class MultiLayerPerceptron:
         self.epochs = epochs
         self.add_bias = add_bias
         np.random.seed(seed)
+        
         ## initializing weights between all layers
         self.list_of_weights = self.__init_weights()
 
 
 
     def fit(self, X: np.array, y: np.array):
+        self.data_size = X.shape[0]
+        self.list_of_weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
         ## append 1 at the end of each record if add_bias is true
-        print(self.list_of_weights)
         if self.add_bias:
             X = self.__add_ones(X)
         
         # List of lists: each of which has the net outputs of a layer
         net_outputs = []
-        for i in range(self.epochs):    
+        for j in range(self.epochs):    
             current = X
 
             ### Feeding Forward [calculating output]
@@ -58,12 +60,11 @@ class MultiLayerPerceptron:
                 current_net_output = current.dot(self.list_of_weights[i]) # input * Weights 
                 net_outputs.append(current_net_output)
 
-                activation = np.vectorize(self.activation_function)(current_net_output)
+                activation = self.activation_function(current_net_output)
                 current = activation
                 # if it's not the output layer
                 if i != self.hidden_layers_number and self.add_bias:
                     current = self.__add_ones(current)
-                print(current)
 
             
             ### backward step [calculating cost gradients with respect to neurons]
@@ -74,14 +75,15 @@ class MultiLayerPerceptron:
             gradients.append(np.zeros((1, self.output_size)))
 
             # Output-layer gradient
-            gradients[self.hidden_layers_number][:] = output_layer_error * np.vectorize(self.activation_function_derivative)(net_outputs[self.hidden_layers_number])
-
+            gradients[self.hidden_layers_number][:] = (output_layer_error * self.activation_function_derivative(net_outputs[self.hidden_layers_number])).sum(axis=0)/self.data_size
             # Calculate cost gradients with respect to neurons in hidden layers
             for i in range(self.hidden_layers_number - 1, -1, -1):
+                gn_t_w = gradients[i+1].dot(self.list_of_weights[i+1][:-1].T)
+                gradients[i][:] = gn_t_w * self.activation_function_derivative(net_outputs[i]).sum(axis=0)
                 
-
+                
             ## forward step2 [updating weights]
-            pass
+            
 
 
 
@@ -102,7 +104,7 @@ class MultiLayerPerceptron:
         shortcut = 1 if self.add_bias else 0
 
         for i in range(self.hidden_layers_number+1):
-            weights_arr = np.random.random_sample((neurons_per_all_layers[i] + shortcut, neurons_per_all_layers[i+1]))
+            weights_arr = np.random.rand(neurons_per_all_layers[i] + shortcut, neurons_per_all_layers[i+1])
             list_of_weights.append(weights_arr)
 
         return list_of_weights
