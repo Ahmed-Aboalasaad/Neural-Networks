@@ -7,11 +7,13 @@ import numpy as np
 # import MultiLayerPerceptron
 add_bias = False
 
+
 def get_file_path():
     global file_path
     file_path = fd.askopenfilename()
     file_path_entry.delete(0, tk.END)
     file_path_entry.insert(0, file_path)
+
 ## print any variable that you want to trace in this function
 def debug():
     print(file_path)
@@ -47,9 +49,12 @@ def Train_MLP():
 
 
     MLP = MultiLayerPerceptron.MultiLayerPerceptron(input_size, output_size, number_of_layers, neurons_per_layer, learning_rate, activation_function, epochs, bias, 42)
-    x = [[1,2], [4,3], [5,6]]
+    
+    # XOR
+    x = [[0, 0], [0, 1], [1, 0], [1, 1]]
     X = np.array(x)
-    y= 1
+    y= np.array([[0], [1], [1], [0]])
+
     MLP.fit(X, y)
 
     
