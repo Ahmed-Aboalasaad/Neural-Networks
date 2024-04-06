@@ -1,7 +1,6 @@
 import numpy as np 
 import activation_functions
 import pandas as pd
-from MultiLayerPerceptron import MultiLayerPerceptron
 
 
 # gradients = [np.zeros((1, n_neurons)) for n_neurons in [3, 3, 2]]
@@ -14,14 +13,20 @@ from MultiLayerPerceptron import MultiLayerPerceptron
 
 
 
-df = pd.DataFrame([[0.3, 0.7], [0.9,0.5]], columns=['x1', 'x2'])
-print(df.head())
+# df = pd.DataFrame([[0.3, 0.7], [0.9,0.5]], columns=['x1', 'x2'])
+# print(df.head())
 
-mlp = MultiLayerPerceptron(2, 2, 2, [4, 3], 1, 'Sigmoid', 1, True, 74)
-print(mlp.weights[0])
+# mlp = MultiLayerPerceptron(2, 2, 2, [4, 3], 1, 'Sigmoid', 1, True, 74)
+# print(mlp.weights[0])
 
 
 
+matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+transposed_matrix = matrix.T
+
+print("Original matrix:\n", matrix)
+print(matrix.shape[0])
 
 
 

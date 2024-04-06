@@ -52,16 +52,16 @@ class MultiLayerPerceptron:
             input = X
 
             ### Feeding Forward
-            for i in range(self.hidden_layers_number + 1):
+            for cluster_index in range(self.hidden_layers_number + 1):
                 # calculate activations 
-                net_input = input.dot(self.weights[i]) # input [dot product] Weights
+                net_input = input.dot(self.weights[cluster_index]) # input [dot product] Weights
                 net_inputs.append(net_input)
                 activation = self.activation_function(net_input)
 
                 # The activation in the current iteration will be the input for the next one
                 input = activation
                 # if the user asked for bias & it's not the last activation
-                if self.add_bias and i != self.hidden_layers_number:
+                if self.add_bias and cluster_index != self.hidden_layers_number:
                     input = self.__add_ones(input)
 
             
@@ -74,21 +74,29 @@ class MultiLayerPerceptron:
             gradients[self.hidden_layers_number][:] = ((output_layer_error/self.examples_number) * self.activation_function_derivative(net_inputs[self.hidden_layers_number])).sum(axis=0)
 
             # Cost gradients with respect to hidden layers neurons
-            for i in range(self.hidden_layers_number - 1, -1, -1):
-                gn_t_w = gradients[i+1].dot(self.weights[i+1][:-1].T)
-                gradients[i][:] = gn_t_w * self.activation_function_derivative(net_inputs[i]).sum(axis=0)
+            for cluster_index in range(self.hidden_layers_number - 1, -1, -1):
+                gn_t_w = gradients[cluster_index+1].dot(self.weights[cluster_index+1][:-1].T)
+                gradients[cluster_index][:] = gn_t_w * self.activation_function_derivative(net_inputs[cluster_index]).sum(axis=0)
 
 
-            ## forward step2 [updating weights]
-            # I (as a non-input neuron) update the weights that get into me using my gradient
-            # weight update equation: new = old + learning_rage * my gradient * input value through this weight
+            ### Updating Weights
+            # I (as a non-input neuron) update the weights that get into me using the cost gradient with respect ot me
+            # weight update equation: new = old + learning_rage * the cost gradient with respect ot me * input value through this weight
             
+            previous_activation = X
             # iterate over weight clusters
-            for cluster in self.weights:
-                
-                # iterate over neurons
-                
-                    # apply the update equation
+            for cluster_index, weight_cluster in enumerate(self.weights):
+                # Iterate over neurons in the go-to layer of this weights cluster
+                for neuron_index in range(weight_cluster.shape[1]):
+                    weight_cluster = weight_cluster.T
+                    
+                    weight_cluster[neuron_index][:] += self.learning_rate * gradients[0][neuron_index] * previous_activation
+
+                    
+
+                    weight_cluster = weight_cluster.T
+                    self.weights[cluster_index] = weight_cluster
+                previous_activation = 
 
 
 
