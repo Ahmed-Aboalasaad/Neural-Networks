@@ -1,5 +1,7 @@
 import numpy as np 
-from math import e
+
+
+e = 2.7182818
 
 # activation functions
 identity = lambda y : y
