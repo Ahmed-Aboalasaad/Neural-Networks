@@ -1,5 +1,6 @@
 import activation_functions
 import numpy as np
+import pandas as pd
 
 activation_function_mapping = {
     'Tanh' : activation_functions.Tanh,
@@ -34,36 +35,53 @@ class MultiLayerPerceptron:
         self.add_bias = add_bias
         np.random.seed(seed)
         self.weights = self.__init_weights()  # initializing random weights between all layers
-        print(f'\n\nInitial Weights:\n{self.weights}')
 
-    def fit(self, X: np.array, y: np.array):
+    def fit(self, X, y):
+        # print(f'\n\nY:\n{y.head()}')
         self.data_size = X.shape[0]
         # self.weights = [np.array([[0.21, -0.4], [0.15, 0.1], [-0.3, 0.24]]), np.array([[-0.2], [0.3], [-0.4]])]
         ## append 1 at the end of each record if add_bias is true
         if self.add_bias:
             X = self.__add_ones(X)
-        
-        # List of lists: each of which has the net outputs of a layer
+
+        X = pd.DataFrame(X)
+        y = pd.DataFrame(y)
+        # print(f'\n\nX:\n{X.shape}\n\n')
+
         for j in range(self.epochs):
-            for record, label in zip(X, y):    
+            for record, label in zip(X, y):
+                print(f'type(label) in Zip():\n{type(label)}\n')
+                record = pd.DataFrame(record)
+                label = pd.DataFrame(label)
+
+                # record = np.array([record], dtype=[("name", object), ("values", object)])
+                # label = np.array([label], dtype=[("name", object), ("values", object)])
+
+                # print(f'Y in Zip():\n{y.head()}\n')
+                # print(f'label in Zip():\n{label}\n')
+                # print(f'record in Zip():\n{record}\n')
+                # exit(0)
+
+                # List of lists: each of which has the net outputs of a layer
                 outputs = []
                 current_input = record
-                activations = [record] 
+                activations = [record]
+
                 ### Feeding Forward [calculating output]
                 for i in range(self.hidden_layers_number + 1):
-                    output = current_input.dot(self.weights[i]) # input * Weights 
+                    output = current_input.dot(self.weights[i]) # input * Weights
                     outputs.append(output)
 
                     activation = self.activation_function(output)
                     current_input = activation
 
                     # if it's not the output layer & the user asked for bias
-                    
                     if i != self.hidden_layers_number and self.add_bias:
                         current_input = self.__add_ones2(current_input)
                     activations.append(current_input)
                 
                 ### backward step [calculating cost gradients with respect to neurons]
+                # print(f'Before Error:\nlabel = {label}\ncurrent_input = {current_input}')
                 output_layer_error = label - current_input  # error calculated in output layer
                 # initializing gradients array
                 gradients = [np.zeros((1, n_neurons)) for n_neurons in self.neurons_per_layer]
@@ -126,7 +144,7 @@ class MultiLayerPerceptron:
         Adding ones weights to compute the bias (represented as extra input)
         '''
         X_shape = X.shape
-        X_with_ones =np.ones((X_shape[0],X_shape[1]+1))
+        X_with_ones = np.ones((X_shape[0], X_shape[1] + 1))
         X_with_ones[:, 0:X_shape[1]] = X
         return X_with_ones
     
